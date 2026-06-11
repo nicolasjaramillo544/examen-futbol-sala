@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Examen — Sistemas de Juego en Fútbol de Salón</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --green-dark: #0F6E56;
+    --green-mid: #1D9E75;
+    --green-light: #E1F5EE;
+    --green-line: #5DCAA5;
+    --amber: #BA7517;
+    --amber-bg: #FAEEDA;
+    --red: #A32D2D;
+    --red-bg: #FCEBEB;
+    --blue: #185FA5;
+    --blue-bg: #E6F1FB;
+    --gray-text: #444441;
+    --gray-muted: #888780;
+    --gray-border: #D3D1C7;
+    --bg: #f7f9f7;
+    --white: #ffffff;
+    --radius: 10px;
+  }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--gray-text);
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  /* HEADER */
+  header {
+    background: var(--green-dark);
+    color: white;
+    padding: 2rem 1.5rem 1.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -40px; left: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.08);
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; right: -20px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    border: 2px solid rgba(255,255,255,0.06);
+  }
+  .header-tag {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    opacity: 0.7;
+    margin-bottom: 8px;
+  }
+  header h1 {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  header p {
+    font-size: 13px;
+    opacity: 0.75;
+  }
+  .header-meta {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 1.2rem;
+    flex-wrap: wrap;
+  }
+  .header-meta span {
+    font-size: 12px;
+    background: rgba(255,255,255,0.12);
+    padding: 4px 14px;
+    border-radius: 20px;
+    opacity: 0.9;
+  }
+
+  /* DATOS ESTUDIANTE */
+  .student-form {
+    background: var(--white);
+    border-bottom: 1px solid var(--gray-border);
+    padding: 1.2rem 1.5rem;
+  }
+  .student-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+  .student-grid label {
+    font-size: 12px;
+    color: var(--gray-muted);
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 500;
+  }
+  .student-grid input {
+    width: 100%;
+    border: 1px solid var(--gray-border);
+    border-radius: 6px;
+    padding: 7px 10px;
+    font-size: 14px;
+    color: var(--gray-text);
+    background: var(--bg);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .student-grid input:focus { border-color: var(--green-mid); }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    background: var(--white);
+    padding: 10px 1.5rem;
+    border-bottom: 1px solid var(--gray-border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .progress-label { font-size: 12px; color: var(--gray-muted); white-space: nowrap; }
+  .progress-track {
+    flex: 1;
+    height: 6px;
+    background: var(--gray-border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--green-mid);
+    border-radius: 3px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .progress-pct {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--green-dark);
+    min-width: 32px;
+    text-align: right;
+  }
+
+  /* MAIN */
+  main { max-width: 760px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+  /* SECTION HEADER */
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 2rem 0 1rem;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--green-light);
+  }
+  .section-num {
+    background: var(--green-dark);
+    color: white;
+    font-size: 11px;
+    font-weight: 700;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .section-title { font-size: 16px; font-weight: 600; color: var(--green-dark); }
+  .section-pts {
+    margin-left: auto;
+    font-size: 11px;
+    background: var(--green-light);
+    color: var(--green-dark);
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* QUESTION CARD */
+  .q-card {
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.25rem;
+    margin-bottom: 14px;
+    transition: border-color 0.2s;
+  }
+  .q-card.answered { border-color: var(--green-line); }
+  .q-card.wrong { border-color: #F09595; }
+
+  .q-label {
+    font-size: 11px;
+    color: var(--gray-muted);
+    margin-bottom: 6px;
+  }
+  .q-text {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 14px;
+    color: var(--gray-text);
+  }
+
+  /* OPTIONS */
+  .options { display: flex; flex-direction: column; gap: 8px; }
+  .opt {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 9px 12px;
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+  .opt:hover { background: var(--green-light); border-color: var(--green-line); }
+  .opt.selected { background: var(--green-light); border-color: var(--green-mid); }
+  .opt.correct { background: #EAF3DE; border-color: #639922; }
+  .opt.incorrect { background: var(--red-bg); border-color: #F09595; }
+  .opt-circle {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    border: 1.5px solid var(--gray-border);
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .opt.selected .opt-circle { border-color: var(--green-mid); background: var(--green-mid); }
+  .opt.correct .opt-circle { border-color: #639922; background: #639922; }
+  .opt.incorrect .opt-circle { border-color: #E24B4A; background: #E24B4A; }
+  .opt-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: white;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .opt.selected .opt-dot,
+  .opt.correct .opt-dot,
+  .opt.incorrect .opt-dot { opacity: 1; }
+
+  /* TEXTAREA */
+  .q-textarea {
+    width: 100%;
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    resize: vertical;
+    min-height: 100px;
+    color: var(--gray-text);
+    background: var(--bg);
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+  }
+  .q-textarea:focus { border-color: var(--green-mid); background: white; }
+  .q-textarea.filled { border-color: var(--green-line); background: white; }
+
+  /* COURT DIAGRAM */
+  .court-wrap {
+    margin: 10px 0 14px;
+    background: var(--bg);
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+  }
+  .court-caption {
+    font-size: 11px;
+    color: var(--gray-muted);
+    margin-top: 6px;
+  }
+
+  /* MATCH DRAG */
+  .match-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .match-col-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--gray-muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+  .match-item {
+    background: var(--bg);
+    border: 1px solid var(--gray-border);
+    border-radius: 7px;
+    padding: 8px 12px;
+    font-size: 13px;
+    margin-bottom: 6px;
+    cursor: grab;
+    user-select: none;
+  }
+  .match-item:active { cursor: grabbing; }
+  .match-target {
+    min-height: 38px;
+    border: 1.5px dashed var(--gray-border);
+    border-radius: 7px;
+    padding: 6px 10px;
+    font-size: 13px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gray-muted);
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .match-target.has-answer { border-color: var(--green-mid); color: var(--gray-text); background: var(--green-light); }
+  .match-target.correct-match { border-color: #639922; background: #EAF3DE; }
+  .match-target.wrong-match { border-color: #E24B4A; background: var(--red-bg); }
+  .match-target-label { font-size: 11px; font-weight: 600; color: inherit; }
+
+  /* SELECTBOX */
+  .q-select {
+    width: 100%;
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    padding: 9px 10px;
+    font-size: 13.5px;
+    color: var(--gray-text);
+    background: var(--bg);
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    font-family: inherit;
+  }
+  .q-select:focus { border-color: var(--green-mid); }
+  .q-select.filled { border-color: var(--green-line); background: white; }
+
+  /* FEEDBACK BOX */
+  .feedback-box {
+    display: none;
+    margin-top: 10px;
+    padding: 9px 12px;
+    border-radius: 7px;
+    font-size: 12.5px;
+    line-height: 1.5;
+  }
+  .feedback-box.correct-fb { background: #EAF3DE; color: #3B6D11; border: 1px solid #C0DD97; display: block; }
+  .feedback-box.wrong-fb { background: var(--red-bg); color: var(--red); border: 1px solid #F7C1C1; display: block; }
+  .feedback-box.info-fb { background: var(--blue-bg); color: var(--blue); border: 1px solid #B5D4F4; display: block; }
+
+  /* NOTE */
+  .q-note {
+    font-size: 12px;
+    color: var(--gray-muted);
+    margin-top: 8px;
+    font-style: italic;
+  }
+
+  /* BUTTONS */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+  }
+  .btn {
+    padding: 11px 22px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: opacity 0.15s, transform 0.1s;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary { background: var(--green-dark); color: white; }
+  .btn-primary:hover { opacity: 0.88; }
+  .btn-outline { background: white; color: var(--green-dark); border: 1.5px solid var(--green-dark); }
+  .btn-outline:hover { background: var(--green-light); }
+
+  /* RESULT PANEL */
+  #result-panel {
+    display: none;
+    background: var(--white);
+    border: 1px solid var(--gray-border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    margin-top: 2rem;
+    text-align: center;
+  }
+  .result-score {
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--green-dark);
+    line-height: 1;
+  }
+  .result-denom { font-size: 22px; color: var(--gray-muted); }
+  .result-label { font-size: 14px; color: var(--gray-muted); margin-top: 6px; }
+  .result-grade {
+    display: inline-block;
+    margin-top: 14px;
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .grade-a { background: #EAF3DE; color: #3B6D11; }
+  .grade-b { background: var(--blue-bg); color: var(--blue); }
+  .grade-c { background: var(--amber-bg); color: var(--amber); }
+  .grade-d { background: var(--red-bg); color: var(--red); }
+  .result-breakdown {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 1.2rem;
+    text-align: left;
+  }
+  .rb-card {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .rb-label { font-size: 11px; color: var(--gray-muted); margin-bottom: 4px; }
+  .rb-val { font-size: 20px; font-weight: 600; color: var(--green-dark); }
+
+  /* COURT SVG inline */
+  .court-svg { width: 100%; max-width: 340px; }
+
+  @media (max-width: 520px) {
+    .student-grid { grid-template-columns: 1fr; }
+    .match-grid { grid-template-columns: 1fr; }
+    .result-breakdown { grid-template-columns: 1fr 1fr; }
+    header h1 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <p class="header-tag">Fútbol de Salón · Evaluación Final 25%</p>
+  <h1>Sistemas de Juego en Fútbol de Salón</h1>
+  <p>2025-1 · Lea atentamente antes de responder</p>
+  <div class="header-meta">
+    <span>⏱ 50 minutos</span>
+    <span>📋 4 secciones</span>
+    <span>⭐ 50 puntos</span>
+  </div>
+</header>
+
+<div class="student-form">
+  <div class="student-grid">
+    <div>
+      <label>Nombres y apellidos</label>
+      <input type="text" id="st-nombre" placeholder="Ej: Mauricio Martínez">
+    </div>
+    <div>
+      <label>Código / grupo</label>
+      <input type="text" id="st-codigo" placeholder="Ej: 2024-123">
+    </div>
+    <div>
+      <label>Fecha</label>
+      <input type="date" id="st-fecha">
+    </div>
+    <div>
+      <label>Docente</label>
+      <input type="text" id="st-docente" placeholder="Ej: VRM-02">
+    </div>
+  </div>
+</div>
+
+<div class="progress-bar-wrap">
+  <span class="progress-label">Progreso</span>
+  <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  <span class="progress-pct" id="prog-pct">0%</span>
+</div>
+
+<main>
+
+<!-- ════════════════════════════════════════════════
+     SECCIÓN 1 — SELECCIÓN MÚLTIPLE
+════════════════════════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">1</div>
+  <span class="section-title">Selección múltiple con única respuesta</span>
+  <span class="section-pts">20 pts · 2 c/u</span>
+</div>
+<p style="font-size:12.5px;color:var(--gray-muted);margin-bottom:1rem;">Marque la única opción correcta para cada pregunta.</p>
+
+<!-- Q1 -->
+<div class="q-card" id="qc-1">
+  <p class="q-label">Pregunta 1 de 10</p>
+  <p class="q-text">¿Cuántos jugadores conforman un equipo en cancha dentro del fútbol de salón (incluyendo el portero)?</p>
+  <div class="options" id="opts-1" data-correct="b" data-type="mc">
+    <div class="opt" data-val="a"><div class="opt-circle"><div class="opt-dot"></div></div>3 jugadores</div>
+    <div class="opt" data-val="b"><div class="opt-circle"><div class="opt-dot"></div></div>5 jugadores</div>
+    <div class="opt" data-val="c"><div class="opt-circle"><div class="opt-dot"></div></div>6 jugadores</div>
+    <div class="opt" data-val="d"><div class="opt-circle"><div class="opt-dot"></div></div>7 jugadores</div>
+  </div>
+  <div class="feedback-box" id="fb-1"></div>
+</div>
+
+<!-- Q2 -->
+<div class="q-card" id="qc-2">
+  <p class="q-label">Pregunta 2 de 10</p>
+  <p class="q-text">El <strong>sistema 1-2-1</strong> (rombo) en fútbol de salón se caracteriza principalmente por:</p>
+  <div class="options" id="opts-2" data-correct="c" data-type="mc">
+    <div class="opt" data-val="a"><div class="opt-circle"><div class="opt-dot"></div></div>Tener dos extremos y un pivot estático sin movilidad</div>
+    <div class="opt" data-val="b"><div class="opt-circle"><div class="opt-dot"></div></div>Ubicar a todos los jugadores en línea horizontal al centro</div>
+    <div class="opt" data-val="c"><div class="opt-circle"><div class="opt-dot"></div></div>Posicionar un cierre, dos alas y un pivot con amplias opciones de rotación</div>
+    <div class="opt" data-val="d"><div class="opt-circle"><div class="opt-dot"></div></div>Ser exclusivamente un sistema defensivo sin aplicación ofensiva</div>
+  </div>
+  <div class="feedback-box" id="fb-2"></div>
+</div>
+
+<!-- Q3 -->
+<div class="q-card" id="qc-3">
+  <p class="q-label">Pregunta 3 de 10</p>
+  <p class="q-text">¿En qué sistema defensivo se ubica a los jugadores formando tres líneas paralelas que cubren todo el ancho de la cancha?</p>
+  <div class="options" id="opts-3" data-correct="a" data-type="mc">
+    <div class="opt" data-val="a"><div class="opt-circle"><div class="opt-dot"></div></div>Sistema de presión o cuadrado defensivo</div>
+    <div class="opt" data-val="b"><div class="opt-circle"><div class="opt-dot"></div></div>Sistema de embudo</div>
+    <div class="opt" data-val="c"><div class="opt-circle"><div class="opt-dot"></div></div>Sistema de rombo defensivo</div>
+    <div class="opt" data-val="d"><div class="opt-circle"><div class="opt-dot"></div></div>Defensa individual hombre a hombre</div>
+  </div>
+  <div class="feedback-box" id="fb-3"></div>
+</div>
+
+<!-- Q4 -->
+<div class="q-card" id="qc-4">
+  <p class="q-label">Pregunta 4 de 10</p>
+  <p class="q-text">El <strong>sistema de embudo</strong> defensivo se caracteriza por:</p>
+  <div class="options" id="opts-4" data-correct="b" data-type="mc">
+    <div class="opt" data-val="a"><div class="opt-circle"><div class="opt-dot"></div></div>Presionar alto al rival apenas pierde el balón</div>
+    <div class="opt" data-val="b"><div class="opt-circle"><div class="opt-dot"></div></div>Replegarse hacia su propia portería, cerrando espacios en zona 3 con alta concentración de jugadores cerca del arco</div>
+    <div class="opt" data-val="c"><div class="opt-circle"><div class="opt-dot"></div></div>Dejar libres los costados para forzar el juego exterior</div>
+    <div class="opt" data-val="d"><div class="opt-circle"><div class="opt-dot"></div></div>Marcar hombre a hombre sin referencias posicionales</div>
+  </div>
+  <div class="feedback-box" id="fb-4"></div>
+</div>
+
+<!-- Q5 -->
+<div class="q-card" id="qc-5">
+  <p class="q-label">Pregunta 5 de 10</p>
+  <p class="q-text">En el sistema ofensivo <strong>1-1-2-1</strong> el "pivot fijo" cumple principalmente la función de:</p>
+  <div class="options" id="opts-5" data-correct="d" data-type="mc">
+    <div class="opt" data-val="a"><div class="opt-circle"><div class="opt-dot"></div></div>Actuar como portero adicional en salidas de balón</div>
+    <div class="opt" data-val="b"><div class="opt-circle"><div class="opt-dot"></div></div>Presionar al portero rival en saque de portería</div>
+    <div class="opt" data-val="c"><div class="opt-circle"><div class="opt-dot"></div></div>Organizar la defensa zonal desde el centro del campo</div>
+    <div class="opt" data-val="d"><div class="opt-circle"><div class="opt-dot"></div></div>Recibir de espaldas al arco y generar superioridades con los alas mediante paredes y doblajes</div>
+  </div>
+  <div class="feedback-box" id="fb-5"></div>
+</div>
+
+<!-- Q6 -->
+<div class="q-card" id="qc-6">
+  <p class="q-label">Pregunta 6 de 10</p>
+  <p class="q-text">¿Cuál de los siguientes sistemas se conoce como <strong>"cuadro ofensivo 4.0"</strong> o portero jugador?</p>
+  <div class="options" id="opts-6" data-correct="c" data-type="mc">
+    <div class="opt" data-val="a"><div class="opt-circle"><div class="opt-dot"></div></div>El sistema 2-1 con pivot móvil</div>
+    <div class="opt" data-val="b"><div class="opt-circle"><div class="opt-dot"></div></div>El sistema de cuadro defensivo</div>
+    <div class="opt" data-val="c"><div class="opt-circle"><div class="opt-dot"></div></div>Cuando el portero abandona su portería y actúa como jugador de campo para generar superioridad numérica</div>
+    <div class="opt" data-val="d"><div class="opt-circle"><div class="opt-dot"></div></div>El sistema de rombo con cierre adelantado</div>
+  </div>
+  <div class="feedback-box" id="fb-6"></div>
+</div>
+
+<!-- Q7 -->
+<div class="q-card" id="qc-7">
+  <p class="q-label">Pregunta 7 de 10</p>
+  <p class="q-text">Para contrarrestar un sistema ofensivo de rombo (1-2-1) rival que usa rotaciones permanentes y pivot fijo, el técnico decide usar embudo en zona 3. ¿Cuál es la lógica principal de esta decisión?</p>
+  <div class="options" id="opts-7" data-correct="a" data-type="mc">
+    <div class="opt" data-val="a"><div class="opt-circle"><div class="opt-dot"></div></div>Saturar el área de finalización para eliminar los espacios que aprovecha el pivot y anular el juego interior</div>
+    <div class="opt" data-val="b"><div class="opt-circle"><div class="opt-dot"></div></div>Forzar al rival a jugar por el centro donde hay más espacio</div>
+    <div class="opt" data-val="c"><div class="opt-circle"><div class="opt-dot"></div></div>Reducir el desgaste físico dejando que el rival circule sin presión</div>
+    <div class="opt" data-val="d"><div class="opt-circle"><div class="opt-dot"></div></div>Presionar alto para recuperar el balón antes de que llegue al pivot</div>
+  </div>
+  <div class="feedback-box" id="fb-7"></div>
+</div>
+
+<!-- Q8 -->
+<div class="q-card" id="qc-8">
+  <p class="q-label">Pregunta 8 de 10</p>
+  <p class="q-text">En el sistema de <strong>rombo defensivo</strong> la posición más avanzada (punta del rombo hacia el rival) está ocupada por:</p>
+  <div class="options" id="opts-8" data-correct="b" data-type="mc">
+    <div class="opt" data-val="a"><div class="opt-circle"><div class="opt-dot"></div></div>El cierre (jugador más cercano al portero)</div>
+    <div class="opt" data-val="b"><div class="opt-circle"><div class="opt-dot"></div></div>El jugador encargado de presionar al poseedor del balón (primer defensor)</div>
+    <div class="opt" data-val="c"><div class="opt-circle"><div class="opt-dot"></div></div>Uno de los dos alas que actúan en paralelo</div>
+    <div class="opt" data-val="d"><div class="opt-circle"><div class="opt-dot"></div></div>El portero cuando abandona la portería</div>
+  </div>
+  <div class="feedback-box" id="fb-8"></div>
+</div>
+
+<!-- Q9 -->
+<div class="q-card" id="qc-9">
+  <p class="q-label">Pregunta 9 de 10</p>
+  <p class="q-text">¿Qué acción defensiva se denomina <strong>"doblaje"</strong> en el fútbol de salón?</p>
+  <div class="options" id="opts-9" data-correct="c" data-type="mc">
+    <div class="opt" data-val="a"><div class="opt-circle"><div class="opt-dot"></div></div>Cuando el portero sale de su área a disputar el balón</div>
+    <div class="opt" data-val="b"><div class="opt-circle"><div class="opt-dot"></div></div>Cuando un defensor realiza una falta táctica para detener una transición</div>
+    <div class="opt" data-val="c"><div class="opt-circle"><div class="opt-dot"></div></div>Cuando dos defensores convergen simultáneamente sobre el poseedor del balón para recuperarlo o forzar un error</div>
+    <div class="opt" data-val="d"><div class="opt-circle"><div class="opt-dot"></div></div>Cuando el ala realiza una diagonal hacia el centro para recibir</div>
+  </div>
+  <div class="feedback-box" id="fb-9"></div>
+</div>
+
+<!-- Q10 -->
+<div class="q-card" id="qc-10">
+  <p class="q-label">Pregunta 10 de 10</p>
+  <p class="q-text">Un jugador ala con <strong>lateralidad dominante izquierda</strong> es ubicado en el ala derecha. ¿Cuál es la principal ventaja táctica de esta decisión?</p>
+  <div class="options" id="opts-10" data-correct="d" data-type="mc">
+    <div class="opt" data-val="a"><div class="opt-circle"><div class="opt-dot"></div></div>Facilita la salida en velocidad por fuera hacia su propio arco</div>
+    <div class="opt" data-val="b"><div class="opt-circle"><div class="opt-dot"></div></div>Obliga al jugador a mejorar su pierna débil</div>
+    <div class="opt" data-val="c"><div class="opt-circle"><div class="opt-dot"></div></div>Reduce su participación en el juego para conservarlo físicamente</div>
+    <div class="opt" data-val="d"><div class="opt-circle"><div class="opt-dot"></div></div>Al perfilarse, su pierna dominante apunta al arco rival, facilitando el disparo o el pase al pivot con el pie fuerte</div>
+  </div>
+  <div class="feedback-box" id="fb-10"></div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     SECCIÓN 2 — UBICACIÓN EN CANCHA
+════════════════════════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">2</div>
+  <span class="section-title">Ubique los sistemas en la cancha</span>
+  <span class="section-pts">10 pts · 2 c/u</span>
+</div>
+<p style="font-size:12.5px;color:var(--gray-muted);margin-bottom:1rem;">Para cada sistema seleccione la descripción correcta de la disposición de los jugadores en cancha.</p>
+
+<!-- Q11 Cuadro defensivo -->
+<div class="q-card" id="qc-11">
+  <p class="q-label">Pregunta 11 — Sistema de cuadro defensivo</p>
+  <div class="court-wrap">
+    <svg class="court-svg" viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg" style="background:#1a7a3c;border-radius:6px;">
+      <!-- cancha -->
+      <rect x="10" y="10" width="280" height="160" rx="3" fill="none" stroke="white" stroke-width="1.5"/>
+      <line x1="150" y1="10" x2="150" y2="170" stroke="white" stroke-width="1" stroke-dasharray="4,3"/>
+      <circle cx="150" cy="90" r="20" fill="none" stroke="white" stroke-width="1"/>
+      <!-- portería izq -->
+      <rect x="10" y="65" width="18" height="50" fill="none" stroke="white" stroke-width="1.5"/>
+      <rect x="10" y="55" width="40" height="70" fill="none" stroke="white" stroke-width="1" stroke-dasharray="3,2"/>
+      <!-- portería der -->
+      <rect x="272" y="65" width="18" height="50" fill="none" stroke="white" stroke-width="1.5"/>
+      <rect x="250" y="55" width="40" height="70" fill="none" stroke="white" stroke-width="1" stroke-dasharray="3,2"/>
+      <!-- Cuadro defensivo: 2+2 -->
+      <circle cx="60" cy="60" r="8" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
+      <circle cx="60" cy="120" r="8" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
+      <circle cx="105" cy="60" r="8" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
+      <circle cx="105" cy="120" r="8" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
+      <!-- portero -->
+      <circle cx="30" cy="90" r="8" fill="#F59E0B" stroke="white" stroke-width="1.5"/>
+      <!-- etiqueta -->
+      <text x="150" y="97" text-anchor="middle" fill="rgba(255,255,255,0.35)" font-size="11" font-family="sans-serif">vs</text>
+    </svg>
+    <p class="court-caption">Azul = defensores · Amarillo = portero</p>
+  </div>
+  <select class="q-select" id="sel-11" data-correct="b">
+    <option value="">— Seleccione la descripción correcta —</option>
+    <option value="a">Dos jugadores al frente presionando y dos atrás escalonados</option>
+    <option value="b">Cuatro jugadores defensivos formando un cuadrilátero, dos en profundidad y dos adelante, cubriendo todo el ancho</option>
+    <option value="c">Un cierre atrás, dos laterales y un enganche semiavanzado</option>
+    <option value="d">Todos los jugadores concentrados frente al área propia</option>
+  </select>
+  <div class="feedback-box" id="fb-11"></div>
+</div>
+
+<!-- Q12 Embudo defensivo -->
+<div class="q-card" id="qc-12">
+  <p class="q-label">Pregunta 12 — Sistema de embudo defensivo</p>
+  <div class="court-wrap">
+    <svg class="court-svg" viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg" style="background:#1a7a3c;border-radius:6px;">
+      <rect x="10" y="10" width="280" height="160" rx="3" fill="none" stroke="white" stroke-width="1.5"/>
+      <line x1="150" y1="10" x2="150" y2="170" stroke="white" stroke-width="1" stroke-dasharray="4,3"/>
+      <circle cx="150" cy="90" r="20" fill="none" stroke="white" stroke-width="1"/>
+      <rect x="10" y="65" width="18" height="50" fill="none" stroke="white" stroke-width="1.5"/>
+      <rect x="10" y="55" width="40" height="70" fill="none" stroke="white" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="272" y="65" width="18" height="50" fill="none" stroke="white" stroke-width="1.5"/>
+      <rect x="250" y="55" width="40" height="70" fill="none" stroke="white" stroke-width="1" stroke-dasharray="3,2"/>
+      <!-- Embudo: concentrado cerca del arco propio -->
+      <circle cx="50" cy="75" r="8" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
+      <circle cx="50" cy="105" r="8" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
+      <circle cx="75" cy="90" r="8" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
+      <circle cx="100" cy="90" r="8" fill="#3B82F6" stroke="white" stroke-width="1.5"/>
+      <circle cx="30" cy="90" r="8" fill="#F59E0B" stroke="white" stroke-width="1.5"/>
+    </svg>
+    <p class="court-caption">Sistema embudo: compacto cerca del arco propio</p>
+  </div>
+  <select class="q-select" id="sel-12" data-correct="c">
+    <option value="">— Seleccione la descripción correcta —</option>
+    <option value="a">Jugadores distribuidos uniformemente por toda la cancha</option>
+    <option value="b">Presión alta con dos jugadores en campo rival</option>
+    <option value="c">Todos los jugadores de campo concentrados en la zona defensiva propia (zona 3), cerrando el pasillo central y los espacios interiores</option>
+    <option value="d">Rombo defensivo con punta presionando en campo rival</option>
+  </select>
+  <div class="feedback-box" id="fb-12"></div>
+</div>
+
+<!-- Q13 Rombo ofensivo -->
+<div class="q-card" id="qc-13">
+  <p class="q-label">Pregunta 13 — Sistema de rombo ofensivo (1-2-1)</p>
+  <div class="court-wrap">
+    <svg class="court-svg" viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg" style="background:#1a7a3c;border-radius:6px;">
+      <rect x="10" y="10" width="280" height="160" rx="3" fill="none" stroke="white" stroke-width="1.5"/>
+      <line x1="150" y1="10" x2="150" y2="170" stroke="white" stroke-width="1" stroke-dasharray="4,3"/>
+      <circle cx="150" cy="90" r="20" fill="none" stroke="white" stroke-width="1"/>
+      <rect x="10" y="65" width="18" height="50" fill="none" stroke="white" stroke-width="1.5"/>
+      <rect x="10" y="55" width="40" height="70" fill="none" stroke="white" stroke-width="1" stroke-dasharray="3,2"/>
+      <rect x="272" y="65" width="18" height="50" fill="none" stroke="white" stroke-width="1.5"/>
+      <rect x="250" y="55" width="40" height="70" fill="none" stroke="white" stroke-width="1" stroke-dasharray="3,2"/>
+      <!-- Rombo ofensivo: cierre atrás, 2 alas, pivot al frente -->
+      <circle cx="110" cy="90" r="8" fill="#EF4444" stroke="white" stroke-width="1.5"/> <!-- cierre -->
+      <circle cx="175" cy="52" r="8" fill="#EF4444" stroke="white" stroke-width="1.5"/> <!-- ala arr -->
+      <circle cx="175" cy="128" r="8" fill="#EF4444" stroke="white" stroke-width="1.5"/> <!-- ala abj -->
+      <circle cx="235" cy="90" r="8" fill="#EF4444" stroke="white" stroke-width="1.5"/> <!-- pivot -->
+      <circle cx="30" cy="90" r="8" fill="#F59E0B" stroke="white" stroke-width="1.5"/>
+      <!-- líneas rombo -->
+      <line x1="110" y1="90" x2="175" y2="52" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-dasharray="3,2"/>
+      <line x1="110" y1="90" x2="175" y2="128" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-dasharray="3,2"/>
+      <line x1="175" y1="52" x2="235" y2="90" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-dasharray="3,2"/>
+      <line x1="175" y1="128" x2="235" y2="90" stroke="rgba(255,255,255,0.3)" stroke-width="1" stroke-dasharray="3,2"/>
+    </svg>
+    <p class="court-caption">Rojo = ofensivos · Amarillo = portero</p>
+  </div>
+  <select class="q-select" id="sel-13" data-correct="a">
+    <option value="">— Seleccione la descripción correcta —</option>
+    <option value="a">Cierre en la base del rombo, dos alas en los vértices laterales y un pivot en la punta más avanzada</option>
+    <option value="b">Cuatro jugadores en línea horizontal a mitad de cancha</option>
+    <option value="c">Dos delanteros adelantados y dos defensores atrás en línea</option>
+    <option value="d">Un pivot fijo atrás y tres jugadores en línea adelante</option>
+  </select>
+  <div class="feedback-box" id="fb-13"></div>
+</div>
+
+<!-- Q14 Cuadro ofensivo -->
+<div class="q-card" id="qc-14">
+  <p class="q-label">Pregunta 14 — Sistema de cuadro ofensivo</p>
+  <select class="q-select" id="sel-14" data-correct="b">
+    <option value="">— Seleccione la descripción correcta —</option>
+    <option value="a">Los cuatro jugadores de campo se ubican en rombo en la propia mitad</option>
+    <option value="b">Dos jugadores en profundidad y dos adelantados formando un rectángulo, generando amplitud y profundidad simultáneas</option>
+    <option value="c">Un cierre defensivo con tres delanteros en línea</option>
+    <option value="d">Todos los jugadores de campo en línea paralela al medio campo</option>
+  </select>
+  <div class="feedback-box" id="fb-14"></div>
+</div>
+
+<!-- Q15 Presión defensivo -->
+<div class="q-card" id="qc-15">
+  <p class="q-label">Pregunta 15 — Sistema de presión defensivo</p>
+  <select class="q-select" id="sel-15" data-correct="d">
+    <option value="">— Seleccione la descripción correcta —</option>
+    <option value="a">Retroceso inmediato a zona propia al perder el balón</option>
+    <option value="b">Defensa estática esperando al rival en su propia mitad</option>
+    <option value="c">Solo el pivot presiona; los demás protegen su área</option>
+    <option value="d">Presión colectiva e inmediata sobre el poseedor del balón en cualquier zona de la cancha, buscando recuperar rápidamente</option>
+  </select>
+  <div class="feedback-box" id="fb-15"></div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     SECCIÓN 3 — RELACIONE COLUMNAS
+════════════════════════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">3</div>
+  <span class="section-title">Relacione conceptos</span>
+  <span class="section-pts">10 pts · 2 c/u</span>
+</div>
+<p style="font-size:12.5px;color:var(--gray-muted);margin-bottom:1rem;">Seleccione en el desplegable el concepto que corresponde a cada definición.</p>
+
+<div class="q-card" id="qc-match">
+  <div style="display:flex;flex-direction:column;gap:14px;">
+
+    <div>
+      <p class="q-text" style="margin-bottom:8px;"><strong>A.</strong> Jugador que se posiciona de espaldas al arco rival, recibe el balón bajo presión y genera superioridades para sus compañeros.</p>
+      <select class="q-select" id="rel-a" data-correct="pivot">
+        <option value="">— Seleccione —</option>
+        <option value="cierre">Cierre</option>
+        <option value="pivot">Pivot</option>
+        <option value="ala">Ala</option>
+        <option value="portero">Portero jugador</option>
+        <option value="doblaje">Doblaje</option>
+      </select>
+      <div class="feedback-box" id="fb-rel-a"></div>
+    </div>
+
+    <div>
+      <p class="q-text" style="margin-bottom:8px;"><strong>B.</strong> Zona de la cancha más cercana a la propia portería donde el equipo busca defender con mayor concentración de jugadores.</p>
+      <select class="q-select" id="rel-b" data-correct="zona3def">
+        <option value="">— Seleccione —</option>
+        <option value="zona1">Zona 1 (ofensiva)</option>
+        <option value="zona2">Zona 2 (transición)</option>
+        <option value="zona3def">Zona 3 (defensiva propia)</option>
+        <option value="pasillo">Pasillo central</option>
+        <option value="mediocampo">Medio campo</option>
+      </select>
+      <div class="feedback-box" id="fb-rel-b"></div>
+    </div>
+
+    <div>
+      <p class="q-text" style="margin-bottom:8px;"><strong>C.</strong> Acción en la que dos defensores convergen sobre el poseedor del balón para recuperarlo o forzar una pérdida.</p>
+      <select class="q-select" id="rel-c" data-correct="doblaje">
+        <option value="">— Seleccione —</option>
+        <option value="pared">Pared</option>
+        <option value="diagonal">Diagonal</option>
+        <option value="doblaje">Doblaje</option>
+        <option value="pressing">Pressing</option>
+        <option value="repliegue">Repliegue</option>
+      </select>
+      <div class="feedback-box" id="fb-rel-c"></div>
+    </div>
+
+    <div>
+      <p class="q-text" style="margin-bottom:8px;"><strong>D.</strong> Cuando el portero abandona su portería y actúa como quinto jugador de campo para generar superioridad numérica.</p>
+      <select class="q-select" id="rel-d" data-correct="portjug">
+        <option value="">— Seleccione —</option>
+        <option value="pivot">Pivot volante</option>
+        <option value="portjug">Portero jugador (cuadro 4.0)</option>
+        <option value="cierre">Cierre avanzado</option>
+        <option value="presion">Presión alta</option>
+        <option value="embudo">Embudo ofensivo</option>
+      </select>
+      <div class="feedback-box" id="fb-rel-d"></div>
+    </div>
+
+    <div>
+      <p class="q-text" style="margin-bottom:8px;"><strong>E.</strong> Jugador con habilidades técnicas superiores (anticipación, velocidad, fuerza en duelos) colocado en la marca directa del jugador más desequilibrante del rival.</p>
+      <select class="q-select" id="rel-e" data-correct="marcador">
+        <option value="">— Seleccione —</option>
+        <option value="marcador">Marcador especial / stopper</option>
+        <option value="ala">Ala creativa</option>
+        <option value="cierre">Cierre</option>
+        <option value="lateral">Lateral ofensivo</option>
+        <option value="pivot">Pivot fijo</option>
+      </select>
+      <div class="feedback-box" id="fb-rel-e"></div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════════════════
+     SECCIÓN 4 — CASOS TÁCTICOS (ABIERTOS)
+════════════════════════════════════════════════ -->
+<div class="section-header">
+  <div class="section-num">4</div>
+  <span class="section-title">Casos tácticos — respuesta abierta</span>
+  <span class="section-pts">10 pts · 5 c/u</span>
+</div>
+<p style="font-size:12.5px;color:var(--gray-muted);margin-bottom:1rem;">Desarrolle su respuesta con análisis, argumentación y, si lo considera, complemente con un esquema táctico. Recuerde que se evalúa el análisis y la argumentación.</p>
+
+<!-- Caso defensivo -->
+<div class="q-card" id="qc-caso1">
+  <p class="q-label">Caso 1 — Caso defensivo · 5 puntos</p>
+  <div style="background:var(--amber-bg);border:1px solid #FAC775;border-radius:8px;padding:12px 14px;margin-bottom:14px;">
+    <p style="font-size:13px;color:#633806;line-height:1.6;"><strong>Situación:</strong> Su equipo se enfrenta a un rival que realiza las salidas o ataques con el sistema ofensivo <strong>1-1-2-1 / rombo</strong> con pivot fijo. El rival utiliza todas las posibilidades de rotaciones para generar espacios y buscar el lanzamiento a su pivot, quien lo único que hace es recibir el balón y buscar el pase porque no tiene las habilidades para girarse hacia el arco. Además posee un jugador ala con habilidades técnicas excepcionales y su lateralidad dominante es la pierna izquierda.</p>
+  </div>
+  <p style="font-size:13px;margin-bottom:10px;color:var(--gray-text);">Explique: <strong>(a)</strong> qué sistema defensivo usaría y desde qué zona lo implementaría, <strong>(b)</strong> qué acciones específicas ejecutaría para contrarrestar al pivot y al ala desequilibrante.</p>
+  <textarea class="q-textarea" id="ta-caso1" placeholder="Desarrolle su respuesta táctica aquí..." rows="7"></textarea>
+  <p class="q-note">Puede complementar con un dibujo o gráfico en hoja adicional si el docente lo permite.</p>
+</div>
+
+<!-- Caso ofensivo -->
+<div class="q-card" id="qc-caso2">
+  <p class="q-label">Caso 2 — Caso ofensivo · 5 puntos</p>
+  <div style="background:var(--blue-bg);border:1px solid #B5D4F4;border-radius:8px;padding:12px 14px;margin-bottom:14px;">
+    <p style="font-size:13px;color:#0C447C;line-height:1.6;"><strong>Situación:</strong> Su equipo se enfrenta a un rival que se defiende con el <strong>sistema de embudo</strong> y que trabaja este sistema desde hace años. Su jugador centro tiene gran habilidad táctica y su equipo posee jugadores con buen manejo técnico individual.</p>
+  </div>
+  <p style="font-size:13px;margin-bottom:10px;color:var(--gray-text);">Explique: <strong>(a)</strong> qué sistema ofensivo utilizaría para atacar el embudo rival, <strong>(b)</strong> cuáles serían las acciones colectivas e individuales clave para generar espacios y vulnerar esa defensa compacta.</p>
+  <textarea class="q-textarea" id="ta-caso2" placeholder="Desarrolle su respuesta táctica aquí..." rows="7"></textarea>
+  <p class="q-note">Puede complementar con un dibujo o gráfico en hoja adicional si el docente lo permite.</p>
+</div>
+
+
+<!-- BOTONES -->
+<div class="btn-row">
+  <button class="btn btn-primary" onclick="submitExam()">✓ Verificar respuestas objetivas</button>
+  <button class="btn btn-outline" onclick="resetExam()">↺ Reiniciar examen</button>
+</div>
+
+<!-- RESULTADO -->
+<div id="result-panel">
+  <p style="font-size:13px;color:var(--gray-muted);margin-bottom:8px;">Resultado secciones 1, 2 y 3</p>
+  <div class="result-score"><span id="res-pts">0</span><span class="result-denom">/40</span></div>
+  <p class="result-label">puntos en preguntas objetivas</p>
+  <div id="res-grade-wrap"></div>
+  <div class="result-breakdown">
+    <div class="rb-card">
+      <p class="rb-label">Sección 1 — Selección múltiple</p>
+      <p class="rb-val" id="rb-s1">—</p>
+    </div>
+    <div class="rb-card">
+      <p class="rb-label">Sección 2 — Ubicación en cancha</p>
+      <p class="rb-val" id="rb-s2">—</p>
+    </div>
+    <div class="rb-card">
+      <p class="rb-label">Sección 3 — Relacione columnas</p>
+      <p class="rb-val" id="rb-s3">—</p>
+    </div>
+  </div>
+  <p style="font-size:12px;color:var(--gray-muted);margin-top:14px;">Las secciones 4 (casos tácticos) son evaluadas por el docente · 10 puntos adicionales</p>
+</div>
+
+</main>
+
+<script>
+const ANSWERS_MC = {
+  1:'b', 2:'c', 3:'a', 4:'b', 5:'d',
+  6:'c', 7:'a', 8:'b', 9:'c', 10:'d'
+};
+const ANSWERS_SEL = {
+  11:'b', 12:'c', 13:'a', 14:'b', 15:'d'
+};
+const ANSWERS_REL = {
+  'a':'pivot', 'b':'zona3def', 'c':'doblaje', 'd':'portjug', 'e':'marcador'
+};
+
+const FEEDBACK_MC = {
+  1: 'Correcto. El fútbol de salón se juega 5 vs 5 incluyendo el portero.',
+  2: 'Correcto. El rombo 1-2-1 ubica: cierre (base), dos alas (vértices laterales) y pivot (punta), con continuas rotaciones.',
+  3: 'Correcto. El sistema de presión/cuadro busca cubrir todo el ancho mediante líneas de presión organizadas.',
+  4: 'Correcto. El embudo se repliega profundo para saturar la zona 3, dificultando el juego interior al rival.',
+  5: 'Correcto. El pivot fijo recibe de espaldas y actúa como punto de apoyo para descargas y doblajes con los alas.',
+  6: 'Correcto. El cuadro 4.0 es cuando el portero sale a jugar de campo generando superioridad 5 vs 4.',
+  7: 'Correcto. El embudo en zona 3 elimina los espacios que necesita el pivot y obliga al rival a jugar solo por fuera.',
+  8: 'Correcto. La punta del rombo defensivo es el primer presionador sobre el poseedor del balón.',
+  9: 'Correcto. El doblaje es la acción de dos defensores convergiendo sobre el poseedor para recuperar el balón.',
+  10: 'Correcto. El ala zurdo en banda derecha al recibir y perfilarse tiene su pierna dominante apuntando al arco.'
+};
+const WRONG_FEEDBACK = 'Respuesta incorrecta. Revise los contenidos trabajados en clase sobre sistemas de juego.';
+
+let submitted = false;
+
+function updateProgress() {
+  let total = 0, answered = 0;
+  for(let i=1;i<=10;i++){
+    total++;
+    const sel = document.querySelector(`#opts-${i} .opt.selected`);
+    if(sel) answered++;
+  }
+  for(let i=11;i<=15;i++){
+    total++;
+    const s = document.getElementById(`sel-${i}`);
+    if(s && s.value) answered++;
+  }
+  ['a','b','c','d','e'].forEach(k=>{
+    total++;
+    const s = document.getElementById(`rel-${k}`);
+    if(s && s.value) answered++;
+  });
+  ['caso1','caso2'].forEach(k=>{
+    total++;
+    const t = document.getElementById(`ta-${k}`);
+    if(t && t.value.trim().length > 20) answered++;
+  });
+  const pct = Math.round((answered/total)*100);
+  document.getElementById('prog-fill').style.width = pct+'%';
+  document.getElementById('prog-pct').textContent = pct+'%';
+}
+
+// MC clicks
+for(let i=1;i<=10;i++){
+  const container = document.getElementById(`opts-${i}`);
+  if(!container) continue;
+  container.querySelectorAll('.opt').forEach(opt=>{
+    opt.addEventListener('click',()=>{
+      if(submitted) return;
+      container.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+      opt.classList.add('selected');
+      document.getElementById(`qc-${i}`).classList.add('answered');
+      updateProgress();
+    });
+  });
+}
+
+// Select changes
+for(let i=11;i<=15;i++){
+  const s = document.getElementById(`sel-${i}`);
+  if(!s) continue;
+  s.addEventListener('change',()=>{
+    if(s.value) { s.classList.add('filled'); document.getElementById(`qc-${i}`).classList.add('answered'); }
+    updateProgress();
+  });
+}
+['a','b','c','d','e'].forEach(k=>{
+  const s = document.getElementById(`rel-${k}`);
+  if(!s) return;
+  s.addEventListener('change',()=>{ if(s.value) s.classList.add('filled'); updateProgress(); });
+});
+
+// Textarea
+['caso1','caso2'].forEach(k=>{
+  const t = document.getElementById(`ta-${k}`);
+  if(!t) return;
+  t.addEventListener('input',()=>{
+    if(t.value.trim().length>20) t.classList.add('filled');
+    else t.classList.remove('filled');
+    updateProgress();
+  });
+});
+
+function submitExam(){
+  submitted = true;
+  let s1=0, s2=0, s3=0;
+
+  // Sec 1
+  for(let i=1;i<=10;i++){
+    const container = document.getElementById(`opts-${i}`);
+    const correct = ANSWERS_MC[i];
+    const fb = document.getElementById(`fb-${i}`);
+    const selected = container.querySelector('.opt.selected');
+    container.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+    if(selected){
+      const val = selected.dataset.val;
+      if(val===correct){
+        container.querySelector(`[data-val="${correct}"]`).classList.add('correct');
+        fb.className='feedback-box correct-fb';
+        fb.textContent='✓ '+FEEDBACK_MC[i];
+        s1+=2;
+      } else {
+        container.querySelector(`[data-val="${val}"]`).classList.add('incorrect');
+        container.querySelector(`[data-val="${correct}"]`).classList.add('correct');
+        fb.className='feedback-box wrong-fb';
+        fb.textContent='✗ '+WRONG_FEEDBACK+' La correcta era: '+correct.toUpperCase()+'.';
+        document.getElementById(`qc-${i}`).classList.add('wrong');
+      }
+    } else {
+      container.querySelector(`[data-val="${correct}"]`).classList.add('correct');
+      fb.className='feedback-box info-fb';
+      fb.textContent='ℹ Sin respuesta. La correcta era: '+correct.toUpperCase()+'.';
+    }
+  }
+
+  // Sec 2
+  for(let i=11;i<=15;i++){
+    const s = document.getElementById(`sel-${i}`);
+    const correct = ANSWERS_SEL[i];
+    const fb = document.getElementById(`fb-${i}`);
+    if(s.value===correct){ s2+=2; fb.className='feedback-box correct-fb'; fb.textContent='✓ Correcto.'; }
+    else { fb.className='feedback-box wrong-fb'; fb.textContent='✗ Incorrecto. Revise la descripción correcta del sistema.'; }
+    s.disabled=true;
+  }
+
+  // Sec 3
+  ['a','b','c','d','e'].forEach(k=>{
+    const s = document.getElementById(`rel-${k}`);
+    const correct = ANSWERS_REL[k];
+    const fb = document.getElementById(`fb-rel-${k}`);
+    if(s.value===correct){ s3+=2; fb.className='feedback-box correct-fb'; fb.textContent='✓ Correcto.'; }
+    else { fb.className='feedback-box wrong-fb'; fb.textContent='✗ Incorrecto. Revise los conceptos clave.'; }
+    s.disabled=true;
+  });
+
+  const total = s1+s2+s3;
+  document.getElementById('res-pts').textContent=total;
+  document.getElementById('rb-s1').textContent=s1+'/20';
+  document.getElementById('rb-s2').textContent=s2+'/10';
+  document.getElementById('rb-s3').textContent=s3+'/10';
+
+  const gw = document.getElementById('res-grade-wrap');
+  let g='', gc='';
+  if(total>=36){g='Excelente';gc='grade-a';}
+  else if(total>=28){g='Aprobado';gc='grade-b';}
+  else if(total>=20){g='Básico';gc='grade-c';}
+  else {g='Insuficiente';gc='grade-d';}
+  gw.innerHTML=`<span class="result-grade ${gc}">${g}</span>`;
+
+  const panel = document.getElementById('result-panel');
+  panel.style.display='block';
+  panel.scrollIntoView({behavior:'smooth', block:'start'});
+  document.getElementById('prog-fill').style.width='100%';
+  document.getElementById('prog-pct').textContent='100%';
+}
+
+function resetExam(){
+  if(!confirm('¿Está seguro de que desea reiniciar el examen?')) return;
+  submitted=false;
+  for(let i=1;i<=10;i++){
+    const c=document.getElementById(`opts-${i}`);
+    c.querySelectorAll('.opt').forEach(o=>o.className='opt');
+    const fb=document.getElementById(`fb-${i}`);
+    fb.className='feedback-box'; fb.textContent='';
+    document.getElementById(`qc-${i}`).classList.remove('answered','wrong');
+  }
+  for(let i=11;i<=15;i++){
+    const s=document.getElementById(`sel-${i}`);
+    s.value=''; s.disabled=false; s.classList.remove('filled');
+    const fb=document.getElementById(`fb-${i}`);
+    fb.className='feedback-box'; fb.textContent='';
+    document.getElementById(`qc-${i}`).classList.remove('answered','wrong');
+  }
+  ['a','b','c','d','e'].forEach(k=>{
+    const s=document.getElementById(`rel-${k}`);
+    s.value=''; s.disabled=false; s.classList.remove('filled');
+    const fb=document.getElementById(`fb-rel-${k}`);
+    fb.className='feedback-box'; fb.textContent='';
+  });
+  ['caso1','caso2'].forEach(k=>{
+    const t=document.getElementById(`ta-${k}`);
+    t.value=''; t.classList.remove('filled');
+  });
+  document.getElementById('result-panel').style.display='none';
+  updateProgress();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// Set today's date
+document.getElementById('st-fecha').valueAsDate = new Date();
+updateProgress();
+</script>
+
+</body>
+</html>
